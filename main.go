@@ -61,7 +61,7 @@ func main() {
 	}
 
 	//fit model
-	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
+	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 8)
 	// fmt.Println(forest)
 
 	//testing
