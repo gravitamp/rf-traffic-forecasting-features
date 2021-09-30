@@ -25,12 +25,12 @@ func BuildForest(inputs [][]interface{}, labels []float64, treesAmount, samplesA
 	mutex := &sync.Mutex{}
 	for i := 0; i < treesAmount; i++ {
 		go func(x int) {
-			// fmt.Printf(">> %v buiding %vth tree...\n", time.Now(), x)
+			fmt.Printf(">> %v buiding %vth tree...\n", time.Now(), x)
 			forest.Trees[x] = BuildTree(inputs, labels, samplesAmount, selectedFeatureAmount)
 			//fmt.Printf("<< %v the %vth tree is done.\n",time.Now(), x)
 			mutex.Lock()
 			prog_counter += 1
-			// fmt.Printf("%v tranning progress %.0f%%\n", time.Now(), float64(prog_counter)/float64(treesAmount)*100)
+			fmt.Printf("%v training progress %.0f%%\n", time.Now(), float64(prog_counter)/float64(treesAmount)*100)
 			mutex.Unlock()
 			done_flag <- true
 		}(i)

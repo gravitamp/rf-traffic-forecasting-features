@@ -58,14 +58,16 @@ func main() {
 			cloudstrain[i+2], holidaytrain[i+2]}
 		train_targets[i] = vehiclestrain[i+3]
 	}
+
+	//fit model
 	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
 
 	//testing
-	y := []interface{}{vehiclestest[43], vehiclestest[44], vehiclestest[45],
-		weathertest[45], temptest[45], cloudstest[45], holidaytest[45]}
+	y := []interface{}{vehiclestest[47], vehiclestest[48], vehiclestest[49],
+		weathertest[49], temptest[49], cloudstest[49], holidaytest[49]}
 
-	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[46])
+	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[50])
 
 }
 
@@ -76,6 +78,8 @@ func setupData(file string) {
 	}
 	csvReader := csv.NewReader(f)
 	csvData, err := csvReader.ReadAll()
+
+	//read without header
 	for i := 1; i < len(csvData); i++ {
 		cuaca := CLEAR
 		switch csvData[i][5] {
