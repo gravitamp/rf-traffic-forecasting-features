@@ -55,8 +55,8 @@ func main() {
 
 	for i := 0; i < count; i++ {
 		train_inputs[i] = []interface{}{vehiclestrain[i], vehiclestrain[i+1], vehiclestrain[i+2],
-			weathertrain[i+2], temptrain[i+2],
-			cloudstrain[i+2], holidaytrain[i+2], datetrain[i+2]}
+			weathertrain[i+3], temptrain[i+3],
+			cloudstrain[i+3], holidaytrain[i+3], datetrain[i+3]}
 		train_targets[i] = vehiclestrain[i+3]
 	}
 
@@ -66,7 +66,7 @@ func main() {
 
 	//testing
 	y := []interface{}{vehiclestest[0], vehiclestest[1], vehiclestest[2],
-		weathertest[2], temptest[2], cloudstest[2], holidaytest[2], datetest[2]}
+		weathertest[3], temptest[3], cloudstest[3], holidaytest[3], datetest[3]}
 
 	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[3])
 
