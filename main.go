@@ -14,13 +14,14 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 var (
 	vehiclestrain []float64
-	datetrain     []string
+	datetrain     []float64
 	vehiclestest  []float64
-	datetest      []string
+	datetest      []float64
 	weathertrain  []float64
 	temptrain     []float64
 	holidaytrain  []float64
@@ -55,7 +56,7 @@ func main() {
 	for i := 0; i < count; i++ {
 		train_inputs[i] = []interface{}{vehiclestrain[i], vehiclestrain[i+1], vehiclestrain[i+2],
 			weathertrain[i+2], temptrain[i+2],
-			cloudstrain[i+2], holidaytrain[i+2]}
+			cloudstrain[i+2], holidaytrain[i+2], datetrain[i+2]}
 		train_targets[i] = vehiclestrain[i+3]
 	}
 
@@ -64,10 +65,10 @@ func main() {
 	// fmt.Println(forest)
 
 	//testing
-	y := []interface{}{vehiclestest[47], vehiclestest[48], vehiclestest[49],
-		weathertest[49], temptest[49], cloudstest[49], holidaytest[49]}
+	y := []interface{}{vehiclestest[0], vehiclestest[1], vehiclestest[2],
+		weathertest[2], temptest[2], cloudstest[2], holidaytest[2], datetest[2]}
 
-	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[50])
+	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[3])
 
 }
 
@@ -118,6 +119,13 @@ func setupData(file string) {
 		val, _ := strconv.ParseFloat(csvData[i][8], 64)
 		temp, _ := strconv.ParseFloat(csvData[i][1], 64)
 		cloud, _ := strconv.ParseFloat(csvData[i][4], 64)
+
+		layouts := "2006-01-02 15:04:05"
+		t, err := time.Parse(layouts, csvData[i][7])
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		//don't split randomly
 		if float64(i) < (float64(len(csvData)) * 0.9) {
 			vehiclestrain = append(vehiclestrain, val)
@@ -125,14 +133,15 @@ func setupData(file string) {
 			temptrain = append(temptrain, temp)
 			holidaytrain = append(holidaytrain, days)
 			cloudstrain = append(cloudstrain, cloud)
-			datetrain = append(datetrain, csvData[i][7])
+			datetrain = append(datetrain, float64(t.Unix()))
 		} else {
 			vehiclestest = append(vehiclestest, val)
 			weathertest = append(weathertest, cuaca)
 			temptest = append(temptest, temp)
 			holidaytest = append(holidaytest, days)
 			cloudstest = append(cloudstest, cloud)
-			datetest = append(datetest, csvData[i][7])
+			datetest = append(datetest, float64(t.Unix()))
 		}
+
 	}
 }
