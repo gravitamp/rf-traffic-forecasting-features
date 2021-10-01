@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fxsjy/RF.go/RF/Regression"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/plotutil"
@@ -67,7 +68,7 @@ func main() {
 	}
 
 	//fit model
-	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 8)
+	forest := Regression.BuildForest(train_inputs, train_targets, count, len(train_inputs), 8)
 	// fmt.Println(forest)
 
 	//testing
@@ -76,6 +77,7 @@ func main() {
 
 	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[3])
 
+	//predicting
 	count2 := len(vehiclestest) - 3
 	for i := 0; i < count2; i++ {
 		predict := []interface{}{vehiclestest[i], vehiclestest[i+1], vehiclestest[i+2],
@@ -115,6 +117,8 @@ func setupData(file string) {
 
 	//read without header
 	for i := 1; i < len(csvData); i++ {
+
+		// parse weather into number
 		cuaca := CLEAR
 		switch csvData[i][5] {
 		case "Clear":
@@ -153,6 +157,7 @@ func setupData(file string) {
 		temp, _ := strconv.ParseFloat(csvData[i][1], 64)
 		cloud, _ := strconv.ParseFloat(csvData[i][4], 64)
 
+		//parse time
 		layouts := "2006-01-02 15:04:05"
 		t, err := time.Parse(layouts, csvData[i][7])
 		if err != nil {
