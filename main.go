@@ -15,6 +15,11 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 var (
@@ -30,6 +35,7 @@ var (
 	temptest      []float64
 	holidaytest   []float64
 	cloudstest    []float64
+	forecast      []float64
 )
 
 const (
@@ -69,6 +75,33 @@ func main() {
 		weathertest[3], temptest[3], cloudstest[3], holidaytest[3], datetest[3]}
 
 	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[3])
+
+	count2 := len(vehiclestest) - 3
+	for i := 0; i < count2; i++ {
+		predict := []interface{}{vehiclestest[i], vehiclestest[i+1], vehiclestest[i+2],
+			weathertest[i+3], temptest[i+3], cloudstest[i+3], holidaytest[i+3], datetest[i+3]}
+		forecast = append(forecast, forest.Predicate(predict))
+
+	}
+
+	//add plot
+	p := plot.New()
+	p.Title.Text = "Traffic Volume Forecasting"
+	p.X.Label.Text = "X"
+	p.Y.Label.Text = "Y"
+
+	err := plotutil.AddLinePoints(p,
+		"Train", makePoints(vehiclestrain, datetrain),
+		"Test", makePoints(vehiclestest, datetest),
+		"Predict", makePoints(forecast, datetest[3:]))
+	if err != nil {
+		panic(err)
+	}
+
+	// Save the plot to a PNG file.
+	if err := p.Save(10*vg.Inch, 4*vg.Inch, "plot.png"); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -144,4 +177,13 @@ func setupData(file string) {
 		}
 
 	}
+}
+
+func makePoints(data []float64, date []float64) plotter.XYs {
+	pts := make(plotter.XYs, len(data))
+	for i := range pts {
+		pts[i].X = date[i]
+		pts[i].Y = data[i]
+	}
+	return pts
 }
